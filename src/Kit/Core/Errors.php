@@ -96,7 +96,7 @@ final class Errors{
 
 		$handler = self::$config['500_handler'];
 		if($handler){
-			$handler = Router::getSortRoute($handler, [self::$catch, $output]);
+			$handler = Router::prepareRoute($handler, [self::$catch, $output]);
 			Router::runRoute($handler);
 			return ;
 		}
@@ -114,7 +114,7 @@ final class Errors{
 
 		$handler = self::$config['404_handler'];
 		if($handler){
-			$handler = Router::getSortRoute($handler, [$error, $output]);
+			$handler = Router::prepareRoute($handler, [$error, $output]);
 			Router::runRoute($handler);
 			return ;
 		}

@@ -5,19 +5,21 @@ namespace Kit\Core;
 use \Kit\Exception\KitException, \Kit\Exception\HttpNotFoundException;
 
 final class System{
-	public $config;
-
 	function __construct(){
 		Output::run();
 		Shutdown::run();
 		Errors::run();
 	}
 
-	public function run(){
+	public function run($route=null, $accessPath=[]){
 		try{
-			$router = Router::getRoute();
+			if(!$route)
+				$route = Router::getRoute();
 
-			Router::runRoute($router);
+			else
+				$route = Router::prepareRoute($route, $accessPath);
+
+			Router::runRoute($route);
 		}
 		catch(HttpNotFoundException $error){
 			Errors::httpNotFound($error);

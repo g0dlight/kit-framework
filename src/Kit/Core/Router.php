@@ -5,7 +5,7 @@ namespace Kit\Core;
 use \Kit\Exception\KitException, \Kit\Exception\HttpNotFoundException;
 
 final class Router{
-	public static $route = [];
+	public static $route = false;
 	public static $accessPath = false;
 	public static $httpMethod = ['any','get','post','delete','head','put','trace','options','connect','patch'];
 
@@ -28,34 +28,31 @@ final class Router{
 			if(!isset($route[$value]))
 				break;
 
-			self::$route['route'] = $route[$value];
 			$route = $route[$value];
 			$removedAccessPath[] = array_shift($accessPath);
 		}
 
-		if(isset(self::$route['route'][$requestMethod]))
-			self::$route['route'] = self::$route['route'][$requestMethod];
+		if(isset($route[$requestMethod]))
+			$route = $route[$requestMethod];
 
-		elseif(isset(self::$route['route']['any']))
-			self::$route['route'] = self::$route['route']['any'];
+		elseif(isset($route['any']))
+			$route = $route['any'];
 
-		elseif(isset(self::$route['route']['controller'])){
+		elseif(isset($route['controller'])){
 			$method = array_shift($accessPath);
 			self::cleanPath($method);
-			self::$route['route'] = self::$route['route']['controller'].'@'.$requestMethod.$method;
+			$route = $route['controller'].'@'.$requestMethod.$method;
 		}
 
 		else{
 			$accessPath = array_merge($removedAccessPath, $accessPath);
-			self::$route['route'] = '';
+			$route = '';
 		}
 
-		self::$route = self::getSortRoute(self::$route['route'], $accessPath);
-
-		return self::$route;
+		return self::prepareRoute($route, $accessPath);
 	}
 
-	public static function getSortRoute($route, $accessPath){
+	public static function prepareRoute($route, $params){
 		$route = explode('@', $route);
 
 		if(count($route) != 2)
@@ -64,11 +61,13 @@ final class Router{
 		return [
 			'class' => 'Controllers\\'.$route[0],
 			'method' => $route[1],
-			'params' => $accessPath
+			'params' => $params
 		];
 	}
 
 	public static function runRoute($sortRoute){
+		self::$route = $sortRoute;
+
 		if(!class_exists($sortRoute['class']))
 			throw new HttpNotFoundException('Routing error: undefined class');
 
@@ -78,7 +77,6 @@ final class Router{
 			throw new HttpNotFoundException('Routing error: undefined method');
 
 		call_user_func_array([$run, $sortRoute['method']], $sortRoute['params']);
-
 	}
 
 	public static function getAccessPath(){
