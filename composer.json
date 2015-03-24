@@ -19,5 +19,10 @@
             "": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": { 
+            "": "tests/_ProjectFiles/App/"
+        }
+    },
     "minimum-stability": "stable"
 }

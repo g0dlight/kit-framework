@@ -1,0 +1,21 @@
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.3/phpunit.xsd"
+    backupGlobals="true"
+    backupStaticAttributes="false"
+    colors="true"
+    stopOnError="false"
+    stopOnFailure="false"
+    stopOnIncomplete="false"
+    stopOnSkipped="false"
+    verbose="false"
+    bootstrap="tests/bootstrap.php"
+    >
+
+    <testsuites>
+        <testsuite name="All test">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+    
+</phpunit>
