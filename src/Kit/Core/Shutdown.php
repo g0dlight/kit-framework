@@ -22,6 +22,7 @@ final class Shutdown{
 		if(Errors::$catch)
 			Errors::flashErrors();
 
-		//Output::flush();
+		Output::end();
+		Output::flush();
 	}
 }

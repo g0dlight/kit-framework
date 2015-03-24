@@ -26,9 +26,4 @@ final class System{
 			Errors::fatal($error);
 		}
 	}
-
-	function __destruct(){
-		Output::end();
-		echo 'aaa';
-	}
 }
