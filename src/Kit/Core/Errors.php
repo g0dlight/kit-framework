@@ -16,11 +16,11 @@ final class Errors{
 
 		$errorsConfig = \Kit\Config::get('system.errors');
 
-		if(!isset($this->config['500_handler']))
-			self::$config['500_handler'] = $this->config['500_handler'];
+		if(!isset($errorsConfig['500_handler']))
+			self::$config['500_handler'] = $errorsConfig['500_handler'];
 
-		if(!isset($this->config['404_handler']))
-			self::$config['404_handler'] = $this->config['404_handler'];
+		if(!isset($errorsConfig['404_handler']))
+			self::$config['404_handler'] = $errorsConfig['404_handler'];
 
 		ini_set('error_reporting', E_ALL);
 		ini_set('display_errors', false);
