@@ -8,8 +8,20 @@ final class Errors{
 	public static $config = array();
 	public static $catch = array();
 
-	public static function run($errorsConfig){
-		self::$config = $errorsConfig;
+	public static function run(){
+		self::$config = [
+			'500_handler' => '',
+			'404_handler' => ''
+		];
+
+		$errorsConfig = \Kit\Config::get('system.errors');
+
+		if(!isset($this->config['500_handler']))
+			self::$config['500_handler'] = $this->config['500_handler'];
+
+		if(!isset($this->config['404_handler']))
+			self::$config['404_handler'] = $this->config['404_handler'];
+
 		ini_set('error_reporting', E_ALL);
 		ini_set('display_errors', false);
 		ini_set('log_errors', true);
@@ -85,7 +97,7 @@ final class Errors{
 			ob_end_clean();
 		}
 
-		$handler = self::$config['error_handler'];
+		$handler = self::$config['500_handler'];
 		if($handler){
 			$handler = Router::getSortRoute($handler, [self::$catch, $output]);
 			Router::runRoute($handler);
@@ -106,7 +118,7 @@ final class Errors{
 			ob_end_clean();
 		}
 
-		$handler = self::$config['http_not_found_handler'];
+		$handler = self::$config['404_handler'];
 		if($handler){
 			$handler = Router::getSortRoute($handler, [$error, $output]);
 			Router::runRoute($handler);
