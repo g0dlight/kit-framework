@@ -9,6 +9,7 @@ final class Output{
 
 	public static function run(){
 		ob_start();
+
 	}
 
 	public static function get(){
@@ -28,10 +29,8 @@ final class Output{
 	}
 
 	public static function end(){
-		while(ob_get_level()){
-			self::get();
-			ob_end_clean();
-		}
+		self::get();
+		ob_end_clean();
 	}
 
 	public static function flush(){
