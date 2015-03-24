@@ -91,11 +91,7 @@ final class Errors{
 	}
 
 	public static function flashErrors(){
-		$output = '';
-		while(ob_get_level()){
-			$output .= ob_get_contents();
-			ob_end_clean();
-		}
+		$output = Output::get();
 
 		$handler = self::$config['500_handler'];
 		if($handler){
@@ -112,11 +108,7 @@ final class Errors{
 	}
 
 	public static function httpNotFound($error){
-		$output = '';
-		while(ob_get_level()){
-			$output .= ob_get_contents();
-			ob_end_clean();
-		}
+		$output = Output::get();
 
 		$handler = self::$config['404_handler'];
 		if($handler){

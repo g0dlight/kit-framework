@@ -8,6 +8,7 @@ final class System{
 	public $config;
 
 	function __construct(){
+		Output::run();
 		Shutdown::run();
 		Errors::run();
 	}
@@ -16,15 +17,7 @@ final class System{
 		try{
 			$router = Router::getRoute();
 
-			ob_start();
-
 			Router::runRoute($router);
-
-			$output = ob_get_contents();
-
-			ob_end_clean();
-
-			echo $output;
 		}
 		catch(HttpNotFoundException $error){
 			Errors::httpNotFound($error);
@@ -32,5 +25,10 @@ final class System{
 		catch(KitException $error){
 			Errors::fatal($error);
 		}
+	}
+
+	function __destruct(){
+		Output::end();
+		echo 'aaa';
 	}
 }
