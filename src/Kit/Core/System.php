@@ -7,7 +7,7 @@ use \Kit\Exception\KitException, \Kit\Exception\HttpNotFoundException;
 final class System{
 	function __construct(){
 		Output::run();
-		
+
 		if(!defined('TESTS'))
 			Shutdown::run();
 
