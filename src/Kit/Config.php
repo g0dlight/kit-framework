@@ -16,7 +16,7 @@ class Config{
 			$path = BASE_PATH.'Config/'.$fileName.'.php';
 
 			if(!file_exists($path))
-				throw new KitException('config file do not exists');
+				throw new KitException('The file: `'.$fileName.'` not exists in `Config` folder');
 
 			self::$files[$fileName] = include $path;
 		}
