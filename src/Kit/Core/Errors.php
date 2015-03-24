@@ -92,6 +92,7 @@ final class Errors{
 
 	public static function flashErrors(){
 		$output = Output::get();
+		Output::clean();
 
 		$handler = self::$config['500_handler'];
 		if($handler){
@@ -109,6 +110,7 @@ final class Errors{
 
 	public static function httpNotFound($error){
 		$output = Output::get();
+		Output::clean();
 
 		$handler = self::$config['404_handler'];
 		if($handler){

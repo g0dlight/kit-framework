@@ -10,7 +10,6 @@ final class Shutdown{
 	}
 
 	public static function execute($workingDir){
-		echo 'bbb';
 		chdir($workingDir);
 		$errorCatch = error_get_last();
 		$notFatalError = [E_WARNING];
