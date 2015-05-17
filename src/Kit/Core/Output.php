@@ -34,7 +34,7 @@ final class Output{
 	}
 
 	public static function end(){
-		while(ob_get_level() > self::$startObLevel){
+		while(self::$startObLevel < ob_get_level()){
 			self::get();
 			ob_end_clean();
 		}

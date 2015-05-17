@@ -98,7 +98,7 @@ final class Errors{
 		if($handler){
 			$handler = Router::prepareRoute($handler, [self::$catch, $output]);
 			Router::runRoute($handler);
-			return ;
+			return;
 		}
 
 		$errors = self::$catch;
@@ -116,7 +116,7 @@ final class Errors{
 		if($handler){
 			$handler = Router::prepareRoute($handler, [$error, $output]);
 			Router::runRoute($handler);
-			return ;
+			return;
 		}
 
 		http_response_code(404);
