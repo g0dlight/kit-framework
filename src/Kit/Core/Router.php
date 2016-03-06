@@ -32,18 +32,17 @@ final class Router{
 			$removedAccessPath[] = array_shift($accessPath);
 		}
 
-		if(isset($route[$requestMethod]))
+		if(isset($route[$requestMethod])){
 			$route = $route[$requestMethod];
-
-		elseif(isset($route['any']))
+		}
+		elseif(isset($route['any'])){
 			$route = $route['any'];
-
+		}
 		elseif(isset($route['controller'])){
 			$method = array_shift($accessPath);
 			self::cleanPath($method);
 			$route = $route['controller'].'@'.$requestMethod.$method;
 		}
-
 		else{
 			$accessPath = array_merge($removedAccessPath, $accessPath);
 			$route = '';

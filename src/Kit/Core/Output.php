@@ -5,8 +5,8 @@ namespace Kit\Core;
 use \Kit\Exception\KitException;
 
 final class Output{
-	private static $content = '';
 	private static $startObLevel = false;
+	private static $content = '';
 
 	public static function run(){
 		self::$startObLevel = ob_get_level();

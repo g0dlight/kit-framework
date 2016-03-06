@@ -14,9 +14,8 @@ final class Shutdown{
 		$errorCatch = error_get_last();
 		$notFatalError = [E_WARNING];
 
-		if(isset($errorCatch['type']) && !in_array($errorCatch['type'], $notFatalError)){
+		if(isset($errorCatch['type']) && !in_array($errorCatch['type'], $notFatalError))
 			Errors::fatal($errorCatch);
-		}
 
 		if(Errors::$catch)
 			Errors::flashErrors();

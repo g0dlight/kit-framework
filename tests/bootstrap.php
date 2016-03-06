@@ -1,7 +1,5 @@
 <?php
 
-define('TESTS', 'this is test environment');
-
 define('BASE_PATH', __DIR__.DIRECTORY_SEPARATOR.'_ProjectFiles'.DIRECTORY_SEPARATOR);
 
 require_once 'vendor/autoload.php';

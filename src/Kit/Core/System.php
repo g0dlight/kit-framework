@@ -8,19 +8,19 @@ final class System{
 	function __construct(){
 		Output::run();
 
-		if(!defined('TESTS'))
-			Shutdown::run();
+		Shutdown::run();
 
 		Errors::run();
 	}
 
 	public function run($route=null, $accessPath=[]){
 		try{
-			if(!$route)
+			if(!$route){
 				$route = Router::getRoute();
-
-			else
+			}
+			else{
 				$route = Router::prepareRoute($route, $accessPath);
+			}
 
 			Router::runRoute($route);
 		}

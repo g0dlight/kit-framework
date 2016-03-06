@@ -48,11 +48,12 @@ final class Errors{
 			E_USER_DEPRECATED    => 'User Deprecated'
 		];
 
-		if(isset($errorType[$errorNumber]))
+		if(isset($errorType[$errorNumber])){
 			return $errorType[$errorNumber];
-		
-		else
+		}
+		else{
 			return 'Unknown Error '.$errorNumber;
+		}
 	}
 
 	public static function fatal($error){
