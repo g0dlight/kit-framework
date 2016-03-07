@@ -5,7 +5,7 @@
     "authors": [
         {
             "name": "Orel Hadad",
-            "email": "orelhadad@gmail.com"
+            "email": "orel@lok.team"
         }
     ],
     "require": {
@@ -20,7 +20,7 @@
         }
     },
     "autoload-dev": {
-        "psr-4": { 
+        "psr-4": {
             "": "tests/_ProjectFiles/App/"
         }
     },
