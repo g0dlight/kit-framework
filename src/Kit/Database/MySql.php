@@ -1,6 +1,6 @@
 <?php
 
-namespace Kit\Helpers\Database;
+namespace Kit\Database;
 
 use \PDO, \PDOException, \Exception;
 
