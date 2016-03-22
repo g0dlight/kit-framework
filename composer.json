@@ -1,6 +1,7 @@
 {
-    "name": "lok/kit",
+    "name": "lok/kit/framework",
     "description": "kit php framework",
+	 "type": "library",
     "license": "proprietary",
     "authors": [
         {
