@@ -5,6 +5,10 @@ namespace Kit\Database\MySql;
 use \Kit\Exception\DatabaseException;
 
 abstract class Manager{
+	public static $_server;
+	public static $_scheme;
+	public static $_table;
+
 	public static function __callStatic($name, $arguments){
 		$arguments = array_merge([self::$_scheme, self::$_table], $arguments);
 
