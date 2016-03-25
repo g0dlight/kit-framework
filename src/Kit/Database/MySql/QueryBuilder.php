@@ -33,7 +33,7 @@ class QueryBuilder{
 			$self->values[] = '`' . $self->table . '`.`' . $column . '`';
 		}
 
-		$self->query = 'SELECT ' . implode(',' $placeHolders);
+		$self->query = 'SELECT ' . implode(',', $placeHolders);
 		$self->query .= ' FROM `' . $self->scheme . '`.`' . $self->table . '`';
 
 		return $self;
