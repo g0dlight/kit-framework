@@ -8,7 +8,7 @@ use \PDO,
 class Connection extends PDO{
 	private static $mysqlConnection = [];
 
-	private function __construct($user, $password, $server, $charset){
+	public function __construct($user, $password, $server, $charset){
 		$dsn = 'mysql:host=' . $server . ';charset=' . $charset;
 
 		parent::__construct($dsn, $user, $password);
@@ -19,17 +19,17 @@ class Connection extends PDO{
 	public static function get($serverKey){
 		$config = Config::get('databases.' . $serverKey);
 
-		$user = (isset($config[$serverKey]['user']))? $config[$serverKey]['user']:'root';
-		$password = (isset($config[$serverKey]['password']))? $config[$serverKey]['password']:NULL;
-		$server = (isset($config[$serverKey]['server']))? $config[$serverKey]['server']:'localhost';
-		$charset = (isset($config[$serverKey]['charset']))? $config[$serverKey]['charset']:'utf8';
+		$user = (isset($config['user']))? $config['user']:'root';
+		$password = (isset($config['password']))? $config['password']:NULL;
+		$server = (isset($config['server']))? $config['server']:'localhost';
+		$charset = (isset($config['charset']))? $config['charset']:'utf8';
 
-		if(self::$mysqlConnection[$serverKey]){
+		if(isset(self::$mysqlConnection[$serverKey])){
 			return self::$mysqlConnection[$serverKey];
 		}
 
 		self::$mysqlConnection[$serverKey] = new self($user, $password, $server, $charset);
 
-		return self::$mysqlConnection;
+		return self::$mysqlConnection[$serverKey];
 	}
 }

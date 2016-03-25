@@ -19,28 +19,11 @@ class QueryBuilder{
 	private $values = [];
 
 	private function __construct($scheme, $table, $type){
-		$self = new self();
+		$this->scheme = $scheme;
+		$this->table = $table;
+		$this->type = $type;
 
-		$self->scheme = $scheme;
-		$self->table = $table;
-		$self->type = $type;
-
-		return $self;
-	}
-
-	public static function select($scheme, $table, $columns){
-		$self = new self($scheme, $table, 'select');
-
-		$placeHolders = [];
-		foreach($columns as $column){
-			$placeHolders[] = '?';
-			$self->values[] = '`' . $self->table . '`.`' . $column . '`';
-		}
-
-		$self->query = 'SELECT ' . implode(',', $placeHolders);
-		$self->query .= ' FROM `' . $self->scheme . '`.`' . $self->table . '`';
-
-		return $self;
+		return $this;
 	}
 
 	public static function insert($scheme, $table, $columns, $rows){
@@ -59,6 +42,25 @@ class QueryBuilder{
 		$self->query = 'INSERT INTO `' . $self->scheme . '`.`' . $self->table . '`';
 		$self->query .= '(' . implode(',', $columns) . ')';
 		$self->query .= ' VALUES ' . rtrim($query, ',');
+
+		return $self;
+	}
+
+	public static function select($scheme, $table, $columns = NULL){
+		$self = new self($scheme, $table, 'select');
+
+		if(!$columns){
+			$query = '*';
+		}
+		else{
+			$query = '`' . $self->table . '`.`id`,';
+			foreach($columns as $column){
+				$query .= '`' . $self->table . '`.`' . $column . '`,';
+			}
+		}
+
+		$self->query = 'SELECT ' . rtrim($query, ',');
+		$self->query .= ' FROM `' . $self->scheme . '`.`' . $self->table . '`';
 
 		return $self;
 	}
@@ -86,35 +88,75 @@ class QueryBuilder{
 		return $self;
 	}
 
-	public function where($where){
+	public function where($where, $delimiter = 'and', $level = 1){
+		$delimiter = strtoupper($delimiter);
+
+		$query = '';
+		foreach($where as $key => $value){
+			if($key === 'and' || $key === 'or'){
+				$result = $this->where($value, $key, $level + 1);
+				if($level != 1){
+					$query .= ' ' . $delimiter . ' (' . $result . ')';
+				}
+				else{
+					$query .= $result;
+				}
+			}
+			else{
+				if($query != ''){
+					$query .= ' ' . $delimiter . ' ';
+				}
+				$query .= '`' . $this->table . '`.`' . $value[0] . '`' . $value[1] . '?';
+				$this->values[] = $value[2];
+			}
+		}
+
+		if($level != 1){
+			return $query;
+		}
+
+		$this->where = ' WHERE ' . $query;
+
 		return $this;
 	}
 
 	public function order($order){
+		$this->order = ' ORDER BY ';
+		foreach($order as $set){
+			foreach($set as $column => $sort){
+				$type = ($sort == -1)? 'DESC':'ASC';
+				$this->order .= '`' . $this->table . '`.`' . $column . '` ' . $type . ',';
+			}
+		}
+
+		$this->order = rtrim($this->order, ',');
+
 		return $this;
 	}
 
 	public function limit($limit){
+		$this->limit = ' LIMIT '.$limit;
+
 		return $this;
 	}
 
 	public function offset($offset){
+		$this->offset = ' OFFSET '.$offset;
+
 		return $this;
 	}
 
-	public function build(){
-		$this->sql = $query.$where.$order.$limit.$offset;
-	}
-
-	public function execute(){
-		$this->build();
+	private function build(){
+		$this->sql = $this->query.$this->where.$this->order.$this->limit.$this->offset;
 	}
 
 	public function getSyntax(){
-		if(!$this->sql){
-			$this->build();
-		}
+		$this->build();
 
 		return $this->sql;
+	}
+
+	public function getValues(){
+		return $this->values;
 	}
 }
