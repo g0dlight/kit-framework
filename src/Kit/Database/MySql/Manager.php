@@ -5,8 +5,8 @@ namespace Kit\Database\MySql;
 use \Kit\Exception\DatabaseException;
 
 abstract class Manager{
-	public function __callStatic($name, $arguments){
-		$arguments = array_merge([$this->_scheme, $this->_table], $arguments);
+	public static function __callStatic($name, $arguments){
+		$arguments = array_merge([self::$_scheme, self::$_table], $arguments);
 
 		return call_user_func_array([__NAMESPACE__ . '\QueryBuilder', $name], $arguments);
 	}
