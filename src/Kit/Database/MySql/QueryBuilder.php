@@ -18,14 +18,18 @@ class QueryBuilder{
 
 	private $values = [];
 
-	private function __construct(){
+	private function __construct($scheme, $table, $type){
+		$self = new self();
+
+		$self->scheme = $scheme;
+		$self->table = $table;
+		$self->type = $type;
+
+		return $self;
 	}
 
 	public static function select($scheme, $table, $columns){
-		$self = new self();
-		$self->scheme = $scheme;
-		$self->table = $table;
-		$self->type = 'select';
+		$self = new self($scheme, $table, 'select');
 
 		$placeHolders = [];
 		foreach($columns as $column){
@@ -40,10 +44,7 @@ class QueryBuilder{
 	}
 
 	public static function insert($scheme, $table, $columns, $rows){
-		$self = new self();
-		$self->scheme = $scheme;
-		$self->table = $table;
-		$self->type = 'insert';
+		$self = new self($scheme, $table, 'insert');
 
 		$query = '';
 		foreach($rows as $row){
@@ -63,14 +64,11 @@ class QueryBuilder{
 	}
 
 	public static function update($scheme, $table, $update){
-		$self = new self();
-		$self->scheme = $scheme;
-		$self->table = $table;
-		$self->type = 'update';
+		$self = new self($scheme, $table, 'update');
 
 		$query = '';
 		foreach($update as $key => $value){
-			$query .= '`' . $self->table . '`.`' . $key . '`=?,'
+			$query .= '`' . $self->table . '`.`' . $key . '`=?,';
 			$self->values[] = $value;
 		}
 
@@ -81,10 +79,7 @@ class QueryBuilder{
 	}
 
 	public static function delete($scheme, $table){
-		$self = new self();
-		$self->scheme = $scheme;
-		$self->table = $table;
-		$self->type = 'delete';
+		$self = new self($scheme, $table, 'delete');
 
 		$self->query = 'DELETE FROM `' . $self->scheme . '`.`' . $self->table . '`';
 
