@@ -65,9 +65,20 @@ final class Errors{
 				'type' => $error->getCode(),
 				'title' => 'Uncaught Exception',
 				'message' => $error->getMessage(),
-				'file' => $trace[1]['file'],
-				'line' => $trace[1]['line']
+				'file' => 'unknown',
+				'line' => 'unknown',
+				'trace' => $trace
 			];
+
+			if(isset($trace[0]['file'])){
+				$error['file'] = $trace[0]['file'];
+			}
+			if(isset($trace[0]['line'])){
+				$error['line'] = $trace[0]['line'];
+			}
+		}
+		else{
+			$error['trace'] = debug_backtrace();
 		}
 
 		$error['fatal'] = true;
@@ -75,6 +86,8 @@ final class Errors{
 
 		if(!isset($error['title']))
 			$error['title'] = self::getTitle($error['type']);
+
+		$error['message'] = explode(' in ', $error['message'])[0];
 
 		self::$catch[] = $error;
 	}
@@ -86,7 +99,8 @@ final class Errors{
 			'type' => $errorNumber,
 			'message' => $errorMessage,
 			'file' => str_replace(dirname(getcwd()), '', $errorFileName),
-			'line' => $errorLineNumber
+			'line' => $errorLineNumber,
+			'trace' => debug_backtrace()
 		];
 
 		self::$catch[] = $error;

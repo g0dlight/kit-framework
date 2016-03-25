@@ -159,4 +159,12 @@ class QueryBuilder{
 	public function getValues(){
 		return $this->values;
 	}
+
+	public function isInsert(){
+		if($this->type == 'insert'){
+			return TRUE;
+		}
+
+		return FALSE;
+	}
 }
