@@ -2,7 +2,7 @@
 
 namespace Kit\Core;
 
-use \Kit\Exception\KitException;
+use \Kit\Exception\CoreException;
 
 final class Shutdown{
 	public static function run(){

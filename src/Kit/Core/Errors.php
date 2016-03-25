@@ -2,7 +2,8 @@
 
 namespace Kit\Core;
 
-use \Kit\Exception\KitException;
+use \Kit\Exception\CoreException,
+	\Kit\Config;
 
 final class Errors{
 	public static $config = array();
@@ -14,7 +15,7 @@ final class Errors{
 			'404_handler' => ''
 		];
 
-		$errorsConfig = \Kit\Config::get('system.errors');
+		$errorsConfig = Config::get('system.errors');
 
 		if(!isset($errorsConfig['500_handler']))
 			self::$config['500_handler'] = $errorsConfig['500_handler'];
@@ -74,7 +75,7 @@ final class Errors{
 
 		if(!isset($error['title']))
 			$error['title'] = self::getTitle($error['type']);
-		
+
 		self::$catch[] = $error;
 	}
 

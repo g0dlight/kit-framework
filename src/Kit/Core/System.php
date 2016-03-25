@@ -2,7 +2,7 @@
 
 namespace Kit\Core;
 
-use \Kit\Exception\KitException, \Kit\Exception\HttpNotFoundException;
+use \Kit\Exception\CoreException, \Kit\Exception\HttpNotFoundException;
 
 final class System{
 	function __construct(){
@@ -27,7 +27,7 @@ final class System{
 		catch(HttpNotFoundException $error){
 			Errors::httpNotFound($error);
 		}
-		catch(KitException $error){
+		catch(CoreException $error){
 			Errors::fatal($error);
 		}
 	}

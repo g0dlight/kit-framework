@@ -2,7 +2,7 @@
 
 namespace Kit;
 
-use \Kit\Exception\KitException;
+use \Kit\Exception\CoreException;
 
 class Config{
 	private static $files = [];
@@ -16,7 +16,7 @@ class Config{
 			$path = BASE_PATH.'Config/'.$fileName.'.php';
 
 			if(!file_exists($path))
-				throw new KitException('The file: `'.$fileName.'` not exists in `Config` folder');
+				throw new CoreException('The file: `'.$fileName.'` not exists in `Config` folder');
 
 			self::$files[$fileName] = include $path;
 		}

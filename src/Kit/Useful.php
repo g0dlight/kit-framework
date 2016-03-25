@@ -2,7 +2,7 @@
 
 namespace Kit;
 
-use \Kit\Exception\KitException;
+use \Kit\Exception\CoreException;
 
 class Useful{
 	public static function nestedValue(&$reference, $keys=null, $value=null){

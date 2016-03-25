@@ -2,7 +2,7 @@
 
 namespace Kit\Core;
 
-use \Kit\Exception\KitException;
+use \Kit\Exception\CoreException;
 
 final class Output{
 	private static $startObLevel = false;

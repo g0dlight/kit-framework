@@ -2,7 +2,7 @@
 
 namespace Kit\Core;
 
-use \Kit\Exception\KitException, \Kit\Exception\HttpNotFoundException;
+use \Kit\Exception\CoreException, \Kit\Exception\HttpNotFoundException;
 
 final class Router{
 	public static $route = false;
@@ -91,7 +91,7 @@ final class Router{
 
 		if(!$accessPath)
 			$accessPath[] = '/';
-		
+
 		return self::$accessPath = $accessPath;
 	}
 
