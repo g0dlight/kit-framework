@@ -89,27 +89,12 @@ abstract class Manager{
 		$temp = $this->toArray();
 
 		if($this->_saveType == 'update'){
-			$method = 'update';
-			$arguments = [$temp];
-
-			$where = [
+			$result = static::initQueryBuilder('update', [$temp])->where([
 				['id', '=', $this->id]
-			];
+			])->execute();
 		}
 		else{
-			$method = 'insert';
-			$arguments = [array_keys($temp), [$temp]];
-		}
-
-		$obj = static::initQueryBuilder($method, $arguments);
-
-		if(isset($where)){
-			$obj = $obj->where($where);
-		}
-
-		$result = $obj->execute();
-
-		if($this->_saveType == 'insert'){
+			$result = static::initQueryBuilder('insert', [array_keys($temp), [$temp]])->execute();
 			$this->id = $result;
 		}
 
