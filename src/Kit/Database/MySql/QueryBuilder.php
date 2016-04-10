@@ -101,34 +101,10 @@ class QueryBuilder{
 		return $self;
 	}
 
-	public function where($where, $delimiter = 'and', $level = 1){
-		$delimiter = strtoupper($delimiter);
+	public function where($callback){
+		$where = new WhereBuilder($this, $callback);
 
-		$query = '';
-		foreach($where as $key => $value){
-			if($key === 'and' || $key === 'or'){
-				$result = $this->where($value, $key, $level + 1);
-				if($level != 1){
-					$query .= ' ' . $delimiter . ' (' . $result . ')';
-				}
-				else{
-					$query .= $result;
-				}
-			}
-			else{
-				if($query != ''){
-					$query .= ' ' . $delimiter . ' ';
-				}
-				$query .= '`' . $this->table . '`.`' . $value[0] . '`' . $value[1] . '?';
-				$this->values[] = $value[2];
-			}
-		}
-
-		if($level != 1){
-			return $query;
-		}
-
-		$this->where = ' WHERE ' . $query;
+		$this->where = $where->query;
 
 		return $this;
 	}
@@ -171,6 +147,14 @@ class QueryBuilder{
 
 	public function getValues(){
 		return $this->values;
+	}
+
+	public function getTable(){
+		return $this->table;
+	}
+
+	public function addValue($value){
+		$this->values[] = $value;
 	}
 
 	public function isInsert(){
