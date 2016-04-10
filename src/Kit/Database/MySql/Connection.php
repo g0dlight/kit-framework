@@ -11,7 +11,9 @@ class Connection extends PDO{
 	public function __construct($user, $password, $server, $charset){
 		$dsn = 'mysql:host=' . $server . ';charset=' . $charset;
 
-		parent::__construct($dsn, $user, $password);
+		parent::__construct($dsn, $user, $password, [
+			self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION
+		]);
 
 		return $this;
 	}

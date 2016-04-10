@@ -11,6 +11,8 @@ abstract class Manager{
 	protected $_rowData;
 	protected $_saveType = 'insert';
 
+	public $_timestamps = TRUE;
+
 	public function __call($name, $arguments){
 		if(!$this->_queryBuilder){
 			throw new DatabaseException('Can not use `' . $name . '` method before useing primary method');
@@ -94,7 +96,7 @@ abstract class Manager{
 			])->execute();
 		}
 		else{
-			$result = static::initQueryBuilder('insert', [array_keys($temp), [$temp]])->execute();
+			$result = static::initQueryBuilder('insert', [[$temp]])->execute();
 			$this->id = $result;
 		}
 
@@ -114,7 +116,7 @@ abstract class Manager{
 	private static function initQueryBuilder($name, $arguments = []){
 		$obj = new static();
 
-		$arguments = array_merge([$obj->_scheme, $obj->_table], $arguments);
+		$arguments = array_merge([$obj], $arguments);
 
 		$obj->_queryBuilder = call_user_func_array([__NAMESPACE__ . '\QueryBuilder', $name], $arguments);
 

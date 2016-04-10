@@ -15,22 +15,29 @@ class QueryBuilder{
 	private $order = '';
 	private $limit = '';
 	private $offset = '';
+	private $timestamps = TRUE;
 
 	private $values = [];
 
-	private function __construct($scheme, $table, $type){
-		$this->scheme = $scheme;
-		$this->table = $table;
+	private function __construct(Manager $model, $type){
+		$this->scheme = $model->_scheme;
+		$this->table = $model->_table;
+		$this->timestamps = $model->_timestamps;
 		$this->type = $type;
 
 		return $this;
 	}
 
-	public static function insert($scheme, $table, $columns, $rows){
-		$self = new self($scheme, $table, 'insert');
+	public static function insert($model, $rows){
+		$self = new self($model, 'insert');
 
 		$query = '';
 		foreach($rows as $row){
+			if($self->timestamps){
+				$row['updated_at'] = date('Y-m-d H:i:s');
+				$row['created_at'] = date('Y-m-d H:i:s');
+			}
+
 			$query .= '(';
 			foreach($row as $value){
 				$query .= '?,';
@@ -39,6 +46,8 @@ class QueryBuilder{
 			$query = rtrim($query, ',') . '),';
 		}
 
+		$columns = array_keys($row);
+
 		$self->query = 'INSERT INTO `' . $self->scheme . '`.`' . $self->table . '`';
 		$self->query .= '(' . implode(',', $columns) . ')';
 		$self->query .= ' VALUES ' . rtrim($query, ',');
@@ -46,8 +55,8 @@ class QueryBuilder{
 		return $self;
 	}
 
-	public static function select($scheme, $table, $columns = NULL){
-		$self = new self($scheme, $table, 'select');
+	public static function select($model, $columns = NULL){
+		$self = new self($model, 'select');
 
 		if(!$columns){
 			$query = '*';
@@ -65,11 +74,15 @@ class QueryBuilder{
 		return $self;
 	}
 
-	public static function update($scheme, $table, $update){
-		$self = new self($scheme, $table, 'update');
+	public static function update($model, $rows){
+		$self = new self($model, 'update');
+
+		if($self->timestamps){
+			$rows['updated_at'] = date('Y-m-d H:i:s');
+		}
 
 		$query = '';
-		foreach($update as $key => $value){
+		foreach($rows as $key => $value){
 			$query .= '`' . $self->table . '`.`' . $key . '`=?,';
 			$self->values[] = $value;
 		}
@@ -80,8 +93,8 @@ class QueryBuilder{
 		return $self;
 	}
 
-	public static function delete($scheme, $table){
-		$self = new self($scheme, $table, 'delete');
+	public static function delete($model){
+		$self = new self($model, 'delete');
 
 		$self->query = 'DELETE FROM `' . $self->scheme . '`.`' . $self->table . '`';
 
