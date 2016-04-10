@@ -91,7 +91,7 @@ final class Router{
 		if(!$method)
 			throw new HttpNotFoundException('Routing error: undefined method');
 
-		call_user_func_array([$run, $method], $sortRoute['params']);
+		return call_user_func_array([$run, $method], $sortRoute['params']);
 	}
 
 	public static function getAccessPath(){

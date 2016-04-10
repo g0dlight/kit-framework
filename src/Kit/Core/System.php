@@ -26,7 +26,7 @@ final class System{
 				$route = Router::prepareRoute($route, $accessPath);
 			}
 
-			Router::runRoute($route);
+			return Router::runRoute($route);
 		}
 		catch(HttpNotFoundException $error){
 			Errors::httpNotFound($error);
