@@ -7,6 +7,7 @@ use \Kit\Exception\CoreException, \Kit\Exception\HttpNotFoundException;
 final class Router{
 	public static $route = false;
 	public static $accessPath = false;
+	public static $requestMethod;
 	public static $httpMethod = ['any','get','post','delete','head','put','trace','options','connect','patch'];
 
 	public static function getRoute(){
@@ -17,7 +18,7 @@ final class Router{
 
 		$route = include BASE_PATH.'app/Route.php';
 
-		$requestMethod = strtolower($_SERVER['REQUEST_METHOD']);
+		self::$requestMethod = strtolower($_SERVER['REQUEST_METHOD']);
 
 		$removedAccessPath = [];
 
@@ -32,16 +33,21 @@ final class Router{
 			$removedAccessPath[] = array_shift($accessPath);
 		}
 
-		if(isset($route[$requestMethod])){
-			$route = $route[$requestMethod];
+		if(isset($route[self::$requestMethod])){
+			$route = $route[self::$requestMethod];
 		}
 		elseif(isset($route['any'])){
 			$route = $route['any'];
 		}
 		elseif(isset($route['controller'])){
 			$method = array_shift($accessPath);
+
+			if(!$method)
+				$method = 'index';
+
 			self::cleanPath($method);
-			$route = $route['controller'].'@'.$requestMethod.$method;
+
+			$route = $route['controller'].'@'.self::$requestMethod.$method.'@any'.$method;
 		}
 		else{
 			$accessPath = array_merge($removedAccessPath, $accessPath);
@@ -54,12 +60,12 @@ final class Router{
 	public static function prepareRoute($route, $params){
 		$route = explode('@', $route);
 
-		if(count($route) != 2)
+		if(count($route) < 2)
 			throw new HttpNotFoundException('Routing error: route need to be assemble like: `controller@method`');
 
 		return [
-			'class' => 'Controllers\\'.$route[0],
-			'method' => $route[1],
+			'class' => 'Controllers\\'.array_shift($route),
+			'method' => $route,
 			'params' => $params
 		];
 	}
@@ -72,17 +78,27 @@ final class Router{
 
 		$run = new $sortRoute['class']();
 
-		if(!in_array($sortRoute['method'], get_class_methods($run)))
+		$controllerMethods = get_class_methods($run);
+
+		$method = false;
+		foreach($sortRoute['method'] as $value){
+			if(in_array($value, $controllerMethods)){
+				$method = $value;
+				break;
+			}
+		}
+
+		if(!$method)
 			throw new HttpNotFoundException('Routing error: undefined method');
 
-		call_user_func_array([$run, $sortRoute['method']], $sortRoute['params']);
+		call_user_func_array([$run, $method], $sortRoute['params']);
 	}
 
 	public static function getAccessPath(){
 		$accessPath = (isset($_SERVER['PATH_INFO']))? $_SERVER['PATH_INFO']:'';
 		$accessPath = explode('/',$accessPath);
 
-		foreach($accessPath as $key => $value){
+		foreach($accessPath as $value){
 			if($value != '')
 				break;
 
