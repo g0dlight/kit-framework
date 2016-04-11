@@ -16,7 +16,7 @@ final class Router{
 
 		$accessPath = self::$accessPath;
 
-		$route = include BASE_PATH.'app/Route.php';
+		$route = include BASE_PATH.'App/Route.php';
 
 		self::$requestMethod = strtolower($_SERVER['REQUEST_METHOD']);
 
