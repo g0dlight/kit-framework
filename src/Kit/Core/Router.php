@@ -78,6 +78,9 @@ final class Router{
 		if(!class_exists($sortRoute['class']))
 			throw new HttpNotFoundException('Routing error: undefined class');
 
+		if(is_a($sortRoute['class'], '\Kit\Controllers\ApiJson', true))
+			System::$jsonResponse = true;
+
 		$run = new $sortRoute['class']();
 
 		$controllerMethods = get_class_methods($run);

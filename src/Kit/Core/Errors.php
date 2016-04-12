@@ -107,6 +107,8 @@ final class Errors{
 	}
 
 	public static function flashErrors(){
+		Response::setCode(500);
+
 		$output = Output::get();
 		Output::clean();
 
@@ -119,12 +121,14 @@ final class Errors{
 
 		$errors = self::$catch;
 
-		http_response_code(500);
+		Response::setContentType('html');
 
 		include dirname(__DIR__).'/Views/Errors.php';
 	}
 
 	public static function httpNotFound($error){
+		Response::setCode(404);
+
 		$output = Output::get();
 		Output::clean();
 
@@ -135,7 +139,7 @@ final class Errors{
 			return;
 		}
 
-		http_response_code(404);
+		Response::setContentType('html');
 
 		include dirname(__DIR__).'/Views/404.php';
 	}

@@ -20,6 +20,8 @@ final class Shutdown{
 		if(Errors::$catch)
 			Errors::flashErrors();
 
+		Response::setHeaders();
+
 		Output::end();
 		Output::flush();
 	}

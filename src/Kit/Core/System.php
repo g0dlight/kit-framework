@@ -2,11 +2,13 @@
 
 namespace Kit\Core;
 
-use \Kit\Exception\CoreException,
-	\Kit\Exception\HttpNotFoundException,
-	\Kit\Config;
+use \Kit\Exception\HttpNotFoundException;
+use \Kit\Config;
+use \Exception;
 
 final class System{
+	public static $jsonResponse = false;
+
 	function __construct(){
 		Output::run();
 
@@ -26,13 +28,25 @@ final class System{
 				$route = Router::prepareRoute($route, $accessPath);
 			}
 
-			return Router::runRoute($route);
+			$result = Router::runRoute($route);
+
+			if(self::$jsonResponse){
+				echo JsonResponse::ok($result);
+			}
+			else{
+				return $result;
+			}
 		}
 		catch(HttpNotFoundException $error){
 			Errors::httpNotFound($error);
 		}
-		catch(CoreException $error){
-			Errors::fatal($error);
+		catch(Exception $error){
+			if(self::$jsonResponse){
+				echo JsonResponse::error($error);
+			}
+			else{
+				Errors::fatal($error);
+			}
 		}
 	}
 
