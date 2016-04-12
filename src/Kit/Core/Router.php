@@ -2,7 +2,9 @@
 
 namespace Kit\Core;
 
-use \Kit\Exception\CoreException, \Kit\Exception\HttpNotFoundException;
+use \Kit\Exception\CoreException;
+use \Kit\Exception\HttpNotFoundException;
+use \ReflectionMethod;
 
 final class Router{
 	public static $route = false;
@@ -91,6 +93,11 @@ final class Router{
 		if(!$method)
 			throw new HttpNotFoundException('Routing error: undefined method');
 
+		$reflectionMethod = new ReflectionMethod($run, $method);
+
+		if($reflectionMethod->getNumberOfRequiredParameters() > count($sortRoute['params']))
+			throw new HttpNotFoundException('Routing error: missing method parameters');
+
 		return call_user_func_array([$run, $method], $sortRoute['params']);
 	}
 
@@ -99,8 +106,8 @@ final class Router{
 		$accessPath = explode('/',$accessPath);
 
 		foreach($accessPath as $value){
-			if($value != '')
-				break;
+			if(!empty($value))
+				continue;
 
 			array_shift($accessPath);
 		}
