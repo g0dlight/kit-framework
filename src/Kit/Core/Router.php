@@ -10,7 +10,7 @@ final class Router{
 	public static $route = false;
 	public static $accessPath = false;
 	public static $requestMethod;
-	public static $httpMethod = ['any','get','post','delete','head','put','trace','options','connect','patch'];
+	public static $httpMethod = ['get','post','delete','head','put','trace','options','connect','patch'];
 
 	public static function getRoute(){
 		if(!self::$accessPath)
@@ -24,8 +24,10 @@ final class Router{
 
 		$removedAccessPath = [];
 
+		$routeTypes = array_merge(['any', 'controller'], self::$httpMethod);
+
 		foreach($accessPath as $value){
-			if(in_array($value, self::$httpMethod))
+			if(in_array($value, $routeTypes))
 				continue;
 
 			if(!isset($route[$value]))
@@ -42,14 +44,29 @@ final class Router{
 			$route = $route['any'];
 		}
 		elseif(isset($route['controller'])){
-			$method = array_shift($accessPath);
+			$method = $removedAccessPath[] = array_shift($accessPath);
 
-			if(!$method)
-				$method = 'index';
+			if($method){
+				self::cleanPath($method);
+				$methods[] = self::$requestMethod.$method;
+				$methods[] = 'any'.$method;
+			}
 
-			self::cleanPath($method);
+			$methods[] = 'getIndex';
+			$methods[] = 'anyIndex';
 
-			$route = $route['controller'].'@'.self::$requestMethod.$method.'@any'.$method;
+			foreach($methods as $key => $method){
+				if(method_exists('Controllers\\'.$route['controller'], $method))
+					break;
+
+				$method = '';
+			}
+
+			$methodsCount = count($methods);
+			if($methodsCount - $key != $methodsCount)
+				array_unshift($accessPath, array_pop($removedAccessPath));
+
+			$route = $route['controller'].'@'.$method;
 		}
 		else{
 			$accessPath = array_merge($removedAccessPath, $accessPath);
@@ -62,12 +79,12 @@ final class Router{
 	public static function prepareRoute($route, $params){
 		$route = explode('@', $route);
 
-		if(count($route) < 2)
+		if(count($route) != 2)
 			throw new HttpNotFoundException('Routing error: route need to be assemble like: `controller@method`');
 
 		return [
 			'class' => 'Controllers\\'.array_shift($route),
-			'method' => $route,
+			'method' => array_shift($route),
 			'params' => $params
 		];
 	}
@@ -83,25 +100,15 @@ final class Router{
 
 		$run = new $sortRoute['class']();
 
-		$controllerMethods = get_class_methods($run);
-
-		$method = false;
-		foreach($sortRoute['method'] as $value){
-			if(in_array($value, $controllerMethods)){
-				$method = $value;
-				break;
-			}
-		}
-
-		if(!$method)
+		if(!method_exists($run, $sortRoute['method']))
 			throw new HttpNotFoundException('Routing error: undefined method');
 
-		$reflectionMethod = new ReflectionMethod($run, $method);
+		$reflectionMethod = new ReflectionMethod($run, $sortRoute['method']);
 
 		if($reflectionMethod->getNumberOfRequiredParameters() > count($sortRoute['params']))
 			throw new HttpNotFoundException('Routing error: missing method parameters');
 
-		return call_user_func_array([$run, $method], $sortRoute['params']);
+		return call_user_func_array([$run, $sortRoute['method']], $sortRoute['params']);
 	}
 
 	public static function getAccessPath(){
@@ -110,10 +117,10 @@ final class Router{
 
 		foreach($accessPath as $value){
 			if(!empty($value))
-				continue;
-
-			array_shift($accessPath);
+				$tmpAccessPath[] = $value;
 		}
+
+		$accessPath = $tmpAccessPath;
 
 		if(!$accessPath)
 			$accessPath[] = '/';
