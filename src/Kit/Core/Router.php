@@ -44,16 +44,19 @@ final class Router{
 			$route = $route['any'];
 		}
 		elseif(isset($route['controller'])){
-			$method = $removedAccessPath[] = array_shift($accessPath);
+			$method = array_shift($accessPath);
 
 			if($method){
+				$removedAccessPath[] = $method;
 				self::cleanPath($method);
 				$methods[] = self::$requestMethod.$method;
 				$methods[] = 'any'.$method;
 			}
 
-			$methods[] = 'getIndex';
-			$methods[] = 'anyIndex';
+			if($method != 'Index'){
+				$methods[] = 'getIndex';
+				$methods[] = 'anyIndex';
+			}
 
 			foreach($methods as $key => $method){
 				if(method_exists('Controllers\\'.$route['controller'], $method))
@@ -63,7 +66,7 @@ final class Router{
 			}
 
 			$methodsCount = count($methods);
-			if($methodsCount - $key != $methodsCount)
+			if($methodsCount - $key <= $methodsCount - 2)
 				array_unshift($accessPath, array_pop($removedAccessPath));
 
 			$route = $route['controller'].'@'.$method;
@@ -104,9 +107,13 @@ final class Router{
 			throw new HttpNotFoundException('Routing error: undefined method');
 
 		$reflectionMethod = new ReflectionMethod($run, $sortRoute['method']);
+		$totalParams = count($sortRoute['params']);
 
-		if($reflectionMethod->getNumberOfRequiredParameters() > count($sortRoute['params']))
+		if($reflectionMethod->getNumberOfRequiredParameters() > $totalParams)
 			throw new HttpNotFoundException('Routing error: missing method parameters');
+
+		if($reflectionMethod->getNumberOfParameters() < $totalParams)
+			throw new HttpNotFoundException('Routing error: to many parameters');
 
 		return call_user_func_array([$run, $sortRoute['method']], $sortRoute['params']);
 	}
@@ -115,17 +122,16 @@ final class Router{
 		$accessPath = (isset($_SERVER['PATH_INFO']))? $_SERVER['PATH_INFO']:'';
 		$accessPath = explode('/',$accessPath);
 
+		$tmpAccessPath = [];
 		foreach($accessPath as $value){
 			if(!empty($value))
 				$tmpAccessPath[] = $value;
 		}
 
-		$accessPath = $tmpAccessPath;
+		if(!$tmpAccessPath)
+			$tmpAccessPath[] = '/';
 
-		if(!$accessPath)
-			$accessPath[] = '/';
-
-		return self::$accessPath = $accessPath;
+		return self::$accessPath = $tmpAccessPath;
 	}
 
 	public static function cleanPath(&$string){
