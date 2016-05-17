@@ -37,6 +37,9 @@ final class Router{
 			$removedAccessPath[] = array_shift($accessPath);
 		}
 
+		if(!$removedAccessPath && isset($route['/']))
+			$route = $route['/'];
+
 		if(isset($route[self::$requestMethod])){
 			$route = $route[self::$requestMethod];
 		}
@@ -127,9 +130,6 @@ final class Router{
 			if(!empty($value))
 				$tmpAccessPath[] = $value;
 		}
-
-		if(!$tmpAccessPath)
-			$tmpAccessPath[] = '/';
 
 		return self::$accessPath = $tmpAccessPath;
 	}
