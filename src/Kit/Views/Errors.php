@@ -78,7 +78,8 @@
 					echo '<div class="trace" tabindex="0">Show Trace';
 					echo '<pre>';
 					foreach ($error['trace'] as $trace) {
-						print_r($trace);
+						$print = print_r($trace, true);
+						echo htmlentities($print);
 					}
 					echo '</pre></div>';
 				}
