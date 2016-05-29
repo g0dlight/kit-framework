@@ -57,7 +57,7 @@ final class Router{
 			}
 
 			if($method != 'Index'){
-				$methods[] = 'getIndex';
+				$methods[] = self::$requestMethod.'Index';
 				$methods[] = 'anyIndex';
 			}
 
