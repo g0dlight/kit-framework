@@ -54,7 +54,7 @@
 			font-size:16px; list-style-type:square;
 		}
 		pre{
-			display:none; font-size:12px;
+			display:none; font-size:12px; word-wrap: break-word;
 		}
 		.trace:focus > pre{
 			display:block; text-align:left;
