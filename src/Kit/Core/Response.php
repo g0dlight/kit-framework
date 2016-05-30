@@ -27,6 +27,9 @@ class Response{
 			case 'html':
 				self::$contentType = 'text/html';
 				break;
+			case 'xml':
+				self::$contentType = 'text/xml';
+				break;
 			case 'json':
 				self::$contentType = 'application/json';
 				break;
