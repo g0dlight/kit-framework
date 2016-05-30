@@ -36,7 +36,7 @@
 			background-color:#e7e7e7; margin-bottom:0; padding:8px;
 		}
 		.item{
-			float:left; margin:10px; padding:6px; border:2px dotted #aeaeae;
+			float:left; margin:10px; padding:6px; border:2px dotted #aeaeae; word-wrap:break-word; width:80%;
 		}
 		.title{
 			font-size:22px;
@@ -54,7 +54,7 @@
 			font-size:16px; list-style-type:square;
 		}
 		pre{
-			display:none; font-size:12px; word-wrap: break-word;
+			display:none; font-size:12px; word-wrap:break-word;
 		}
 		.trace:focus > pre{
 			display:block; text-align:left;
