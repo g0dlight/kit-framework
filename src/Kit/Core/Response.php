@@ -3,7 +3,7 @@
 namespace Kit\Core;
 
 class Response{
-	private static $code = 202;
+	private static $code = 200;
 	private static $contentType;
 
 	public static function setHeaders(){
