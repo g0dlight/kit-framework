@@ -6,6 +6,7 @@ class TemplateEngine{
 	private $buildStatus = false;
 	private $content;
 	private $removedFiles = [];
+	private $substance = [];
 
 	public function __construct($file){
 		$this->content = $this->getFileContent($file);
@@ -16,7 +17,17 @@ class TemplateEngine{
 
 		$reg = '/<span template-engine=".*"><\/span>/';
 
-		return preg_replace_callback($reg, [$this, 'replace'], $this->content);
+		$this->content = preg_replace_callback($reg, [$this, 'replace'], $this->content);
+
+		$reg = '/<span template-engine=".*" template-engine-type="file"><\/span>/';
+
+		$this->content = preg_replace_callback($reg, [$this, 'replaceFromFile'], $this->content);
+
+		return $this->content;
+	}
+
+	public function addSubstance($id, $value){
+		$this->substance[$id] = $value;
 	}
 
 	public function remove($file){
@@ -29,6 +40,12 @@ class TemplateEngine{
 
 	private function replace($matches){
 		$matches = str_replace(['<span template-engine="', '"></span>'], '', $matches);
+
+		return $this->substance[$matches[0]] ?? '';
+	}
+
+	private function replaceFromFile($matches){
+		$matches = str_replace(['<span template-engine="', '" template-engine-type="file"></span>'], '', $matches);
 
 		$content = '';
 
