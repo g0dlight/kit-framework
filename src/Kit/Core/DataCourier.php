@@ -18,13 +18,17 @@ class DataCourier{
 	}
 
 	private function setData($data){
-		if($data)
+		if(is_array($data)){
 			$this->query = '?' . http_build_query($data);
+		}
+		elseif(is_string($data)){
+			$this->query = $data;
+		}
 	}
 
 	private function optionsInit($options){
 		$defualtOptions = [
-			// CURLOPT_HTTPHEADER => '',
+			// CURLOPT_HTTPHEADER => [],
 			CURLOPT_RETURNTRANSFER => TRUE, // return web page
 			CURLOPT_HEADER => FALSE, // don't return headers
 			CURLOPT_FOLLOWLOCATION => FALSE, // follow redirects
@@ -36,10 +40,13 @@ class DataCourier{
 			CURLOPT_PROXY => FALSE
 		];
 
-		if($options)
-			$defualtOptions = array_merge($defualtOptions, $options);
-
 		$this->options = $defualtOptions;
+
+		if($options){
+			foreach($options as $key => $value) {
+				$this->setOption($key, $value);
+			}
+		}
 
 		$this->setOption(CURLOPT_URL, $this->url);
 	}
