@@ -19,7 +19,7 @@ class TemplateEngine{
 
 		$this->content = preg_replace_callback($reg, [$this, 'replace'], $this->content);
 
-		$reg = '/<span template-engine=".*" template-engine-type="file"><\/span>/';
+		$reg = '/<span template-engine-file=".*"><\/span>/';
 
 		$this->content = preg_replace_callback($reg, [$this, 'replaceFromFile'], $this->content);
 
@@ -45,7 +45,7 @@ class TemplateEngine{
 	}
 
 	private function replaceFromFile($matches){
-		$matches = str_replace(['<span template-engine="', '" template-engine-type="file"></span>'], '', $matches);
+		$matches = str_replace(['<span template-engine-file="', '"></span>'], '', $matches);
 
 		$content = '';
 
