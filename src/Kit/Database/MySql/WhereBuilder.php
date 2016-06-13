@@ -13,7 +13,7 @@ class WhereBuilder{
 	}
 
 	public function assert($key, $operator, $value){
-		$query = '`' . $this->queryBuilder->getTable() . '`.`' . $key . '`' . $operator;
+		$query = '`' . $this->queryBuilder->getTable() . '`.`' . $key . '` ' . $operator . ' ';
 
 		if(is_array($value)){
 			$query .= '(' . implode(',', array_fill(0, count($value), '?')) . ')';
