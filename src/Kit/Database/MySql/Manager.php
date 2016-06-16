@@ -28,7 +28,7 @@ abstract class Manager{
 	}
 
 	public function __get($key){
-		if(!isset($this->_rowData[$key])){
+		if(!array_key_exists($key, $this->_rowData)){
 			throw new DatabaseException('trying to get property not exists');
 		}
 
@@ -104,7 +104,7 @@ abstract class Manager{
 		return $result;
 	}
 
-	public function delete(){
+	public function remove(){
 		return static::initQueryBuilder('delete')->where([
 			['id', '=', $this->id]
 		])->execute();
