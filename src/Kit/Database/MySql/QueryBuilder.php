@@ -56,8 +56,6 @@ class QueryBuilder{
 		$self->query .= '(' . $columns . ')';
 		$self->query .= ' VALUES ' . rtrim($query, ',');
 
-		var_dump($self->query);
-
 		return $self;
 	}
 
