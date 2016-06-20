@@ -55,6 +55,11 @@ class DataCourier{
 		$this->options[$key] = $value;
 	}
 
+	public function setBasicAuth($username, $password){
+		$this->setOption(CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+		$this->setOption(CURLOPT_USERPWD, $username . ':' . $password);
+	}
+
 	public function post(){
 		$this->setOption(CURLOPT_POST, TRUE);
 		$this->setOption(CURLOPT_POSTFIELDS, $this->query);

@@ -46,11 +46,17 @@ class QueryBuilder{
 			$query = rtrim($query, ',') . '),';
 		}
 
-		$columns = array_keys($row);
+		$columns = '';
+		foreach(array_keys($row) as $column){
+			$columns .= '`' . $column . '`,';
+		}
+		$columns = rtrim($columns, ',');
 
 		$self->query = 'INSERT INTO `' . $self->scheme . '`.`' . $self->table . '`';
-		$self->query .= '(' . implode(',', $columns) . ')';
+		$self->query .= '(' . $columns . ')';
 		$self->query .= ' VALUES ' . rtrim($query, ',');
+
+		var_dump($self->query);
 
 		return $self;
 	}
