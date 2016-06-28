@@ -25,13 +25,12 @@ class Response{
 	public static function setContentType($contentType){
 		switch($contentType){
 			case 'html':
-				self::$contentType = 'text/html';
-				break;
 			case 'xml':
-				self::$contentType = 'text/xml';
+				self::$contentType = 'text/' . $contentType;
 				break;
 			case 'json':
-				self::$contentType = 'application/json';
+			case 'pdf':
+				self::$contentType = 'application/' . $contentType;
 				break;
 		}
 
