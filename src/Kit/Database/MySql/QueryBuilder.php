@@ -19,6 +19,8 @@ class QueryBuilder{
 
 	private $values = [];
 
+	public static $timestampFormat = 'Y-m-d H:i:s';
+
 	private function __construct(Manager $model, $type){
 		$this->scheme = $model->_scheme;
 		$this->table = $model->_table;
@@ -34,8 +36,8 @@ class QueryBuilder{
 		$query = '';
 		foreach($rows as $row){
 			if($self->timestamps){
-				$row['updated_at'] = date('Y-m-d H:i:s');
-				$row['created_at'] = date('Y-m-d H:i:s');
+				$row['created_at'] = date(self::$timestampFormat);
+				$row['updated_at'] = date(self::$timestampFormat);
 			}
 
 			$query .= '(';
@@ -82,7 +84,7 @@ class QueryBuilder{
 		$self = new self($model, 'update');
 
 		if($self->timestamps){
-			$rows['updated_at'] = date('Y-m-d H:i:s');
+			$rows['updated_at'] = date(self::$timestampFormat);
 		}
 
 		$query = '';
@@ -167,5 +169,9 @@ class QueryBuilder{
 		}
 
 		return FALSE;
+	}
+
+	public function isWithTimestamps(){
+		return $this->timestamps;
 	}
 }

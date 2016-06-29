@@ -92,13 +92,30 @@ abstract class Manager{
 
 		if($this->_saveType == 'update'){
 			$self = $this;
-			$result = static::initQueryBuilder('update', [$temp])->where(function($w) use ($self){
+			$obj = static::initQueryBuilder('update', [$temp])->where(function($w) use ($self){
 				return $w->assert('id', '=', $self->id);
-			})->execute();
+			});
+
+			$result = $obj->execute();
+
+			$tempValues = $obj->_queryBuilder->getValues();
+
+			if($obj->_queryBuilder->isWithTimestamps())
+				$this->updated_at = $tempValues[count($tempValues) - 3];
 		}
 		else{
-			$result = static::initQueryBuilder('insert', [[$temp]])->execute();
+			$obj = static::initQueryBuilder('insert', [[$temp]]);
+
+			$result = $obj->execute();
+
 			$this->id = $result;
+
+			$tempValues = $obj->_queryBuilder->getValues();
+
+			if($obj->_queryBuilder->isWithTimestamps()){
+				$this->created_at = $tempValues[count($tempValues) - 1];
+				$this->updated_at = $tempValues[count($tempValues) - 2];
+			}
 		}
 
 		return $result;
