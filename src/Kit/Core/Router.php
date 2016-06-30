@@ -127,7 +127,7 @@ final class Router{
 
 		$tmpAccessPath = [];
 		foreach($accessPath as $value){
-			if(!empty($value))
+			if($value != '')
 				$tmpAccessPath[] = $value;
 		}
 
