@@ -54,5 +54,7 @@ final class System{
 		$config = Config::get('system');
 
 		date_default_timezone_set($config['defaultTimezone']);
+
+		define('DATE', $config['dateTemplate']);
 	}
 }

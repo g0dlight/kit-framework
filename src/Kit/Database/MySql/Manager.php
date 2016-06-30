@@ -122,9 +122,10 @@ abstract class Manager{
 	}
 
 	public function remove(){
-		return static::initQueryBuilder('delete')->where([
-			['id', '=', $this->id]
-		])->execute();
+		$self = $this;
+		return static::initQueryBuilder('delete')->where(function($w) use ($self){
+			return $w->assert('id', '=', $self->id);
+		})->execute();
 	}
 
 	public function toArray(){
