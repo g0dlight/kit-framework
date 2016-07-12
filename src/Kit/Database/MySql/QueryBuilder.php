@@ -12,6 +12,7 @@ class QueryBuilder{
 	private $query;
 
 	private $where = '';
+	private $group = '';
 	private $order = '';
 	private $limit = '';
 	private $offset = '';
@@ -68,7 +69,7 @@ class QueryBuilder{
 			$query = '*';
 		}
 		else{
-			$query = '`' . $self->table . '`.`id`,';
+			$query = '';
 			foreach($columns as $column){
 				$query .= '`' . $self->table . '`.`' . $column . '`,';
 			}
@@ -115,6 +116,18 @@ class QueryBuilder{
 		return $this;
 	}
 
+ 	public function group($group){
+		$this->group = ' GROUP BY ';
+
+		foreach($group as $column){
+			$this->group .= '`' . $this->table . '`.`' . $column . '`,';
+		}
+
+		$this->group = rtrim($this->group, ',');
+
+		return $this;
+	}
+
 	public function order($order){
 		$this->order = ' ORDER BY ';
 		foreach($order as $set){
@@ -142,7 +155,7 @@ class QueryBuilder{
 	}
 
 	private function build(){
-		$this->sql = $this->query.$this->where.$this->order.$this->limit.$this->offset;
+		$this->sql = $this->query.$this->where.$this->group.$this->order.$this->limit.$this->offset;
 	}
 
 	public function getSyntax(){
