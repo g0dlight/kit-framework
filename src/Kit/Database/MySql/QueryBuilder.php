@@ -71,7 +71,26 @@ class QueryBuilder{
 		else{
 			$query = '';
 			foreach($columns as $column){
-				$query .= '`' . $self->table . '`.`' . $column . '`,';
+				$function = false;
+				$as = false;
+
+				if(is_array($column))
+					list($column, $as) = $column;
+
+				if(is_array($column))
+					list($function, $column) = $column;
+
+				$columnQuery = '`' . $self->table . '`.`' . $column . '`';
+
+				if($function)
+					$columnQuery = $function . '(' . $columnQuery . ')';
+
+				$query .= $columnQuery;
+
+				if($as)
+					$query .= ' AS ' . $as;
+
+				$query .= ',';
 			}
 		}
 
