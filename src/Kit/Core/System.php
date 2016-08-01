@@ -8,20 +8,29 @@ use \Exception;
 
 final class System{
 	public static $jsonResponse = false;
+	public static $argv = NULL;
 
 	function __construct(){
-		Output::run();
+		if(!is_null(self::$argv)){
+			Output::run();
 
-		Shutdown::run();
+			Shutdown::run();
 
-		Errors::run();
+			Errors::run();
+		}
 	}
 
 	public function run($route=null, $accessPath=[]){
 		try{
 			$this->setSettings();
 
-			if(!$route){
+			if(!is_null(self::$argv)){
+				$route = array_shift(self::$argv);
+				$accessPath = self::$argv;
+
+				$route = Router::prepareRoute($route, $accessPath);
+			}
+			elseif(!$route){
 				$route = Router::getRoute();
 			}
 			else{
@@ -48,6 +57,12 @@ final class System{
 				Errors::fatal($error);
 			}
 		}
+	}
+
+	public static function setArgv($argv){
+		array_shift($argv);
+
+		self::$argv = $argv;
 	}
 
 	private function setSettings(){

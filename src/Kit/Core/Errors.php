@@ -123,7 +123,12 @@ final class Errors{
 
 		Response::setContentType('html');
 
-		include dirname(__DIR__).'/Views/Errors.php';
+		if(!is_null(System::$argv)){
+			print_r(self::$catch);
+		}
+		else{
+			include dirname(__DIR__).'/Views/Errors.php';
+		}
 	}
 
 	public static function httpNotFound($error){
@@ -141,6 +146,11 @@ final class Errors{
 
 		Response::setContentType('html');
 
-		include dirname(__DIR__).'/Views/404.php';
+		if(!is_null(System::$argv)){
+			print_r($error);
+		}
+		else{
+			include dirname(__DIR__).'/Views/404.php';
+		}
 	}
 }
