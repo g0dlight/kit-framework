@@ -11,13 +11,11 @@ final class System{
 	public static $argv = NULL;
 
 	function __construct(){
-		if(!is_null(self::$argv)){
-			Output::run();
+		Output::run();
 
-			Shutdown::run();
+		Shutdown::run();
 
-			Errors::run();
-		}
+		Errors::run();
 	}
 
 	public function run($route=null, $accessPath=[]){
