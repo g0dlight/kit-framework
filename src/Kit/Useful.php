@@ -2,10 +2,10 @@
 
 namespace Kit;
 
-use \Kit\Exception\CoreException;
-
-class Useful{
-	public static function nestedValue(&$reference, $keys=null, $value=null){
+class Useful
+{
+	public static function nestedValue(&$reference, $keys=null, $value=null)
+    {
 		if($keys != null && !is_array($keys))
 			$keys = explode('.', $keys);
 

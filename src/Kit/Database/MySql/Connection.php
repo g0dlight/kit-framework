@@ -2,13 +2,15 @@
 
 namespace Kit\Database\MySql;
 
-use \PDO,
-	\Kit\Config;
+use PDO;
+use Kit\Config;
 
-class Connection extends PDO{
+class Connection extends PDO
+{
 	private static $mysqlConnection = [];
 
-	public function __construct($user, $password, $server, $charset){
+	public function __construct($user, $password, $server, $charset)
+    {
 		$dsn = 'mysql:host=' . $server . ';charset=' . $charset;
 
 		parent::__construct($dsn, $user, $password, [
@@ -18,7 +20,8 @@ class Connection extends PDO{
 		return $this;
 	}
 
-	public static function get($serverKey){
+	public static function get($serverKey)
+    {
 		$config = Config::get('databases.' . $serverKey);
 
 		$user = (isset($config['user']))? $config['user']:'root';

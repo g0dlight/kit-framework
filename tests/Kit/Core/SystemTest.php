@@ -1,14 +1,73 @@
 <?php
 
-class SystemTest extends PHPUnit_Framework_TestCase{
-	public function testControllerLoad(){
-		$app = new Kit\Core\System();
+use Kit\Core\System;
+use Kit\Core\Output;
 
-		$app->run('Welcome@getIndex');
+class SystemTest extends PHPUnit_Framework_TestCase
+{
+    protected static $app;
 
-		Kit\Core\Output::end();
-		$output = Kit\Core\Output::get();
+    public static function setUpBeforeClass()
+    {
+        self::$app = new System();
+    }
 
-		$this->assertEquals($output, 'controller load');
+    public function testInit()
+    {
+        $this->assertEquals(System::class, get_class( self::$app ));
+    }
+
+    public function testCliControllerLoad()
+    {
+        System::setArgv([__FILE__, 'Welcome@getIndex']);
+
+        self::$app->run();
+
+        $output = Output::get();
+        Output::clean();
+
+        $this->assertEquals('controller load', $output);
+
+        System::$argv = NULL;
+    }
+
+    public function testDefaultLoad()
+    {
+        self::$app->run();
+
+        $output = Output::get();
+        Output::clean();
+
+        $this->assertEquals('controller load', $output);
+    }
+
+    public function testControllerLoad()
+    {
+        self::$app->run('Welcome@getIndex');
+
+		$output = Output::get();
+        Output::clean();
+
+		$this->assertEquals('controller load', $output);
 	}
+
+    public function testJsonControllerLoad()
+    {
+        self::$app->run('Json@getIndex');
+
+        $output = Output::get();
+        Output::clean();
+
+        $this->assertEquals('{"status":"ok"}', $output);
+    }
+
+    public function testBadController()
+    {
+        self::$app->run('Welcome@getIndex2');
+
+        $output = Output::get();
+        Output::clean();
+
+        $this->assertEquals('Kit\Exception\HttpNotFoundException', substr($output, 0, 35));
+    }
 }

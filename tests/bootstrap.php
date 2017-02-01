@@ -2,6 +2,11 @@
 
 define('BASE_PATH', __DIR__.DIRECTORY_SEPARATOR.'_ProjectFiles'.DIRECTORY_SEPARATOR);
 
-require_once 'vendor/autoload.php';
+require_once  BASE_PATH . '../../vendor/autoload.php';
 
-echo 'bootstrap loaded'.PHP_EOL;
+use Kit\Core\System;
+use Kit\Enums\SystemEnvironments;
+
+System::$environment = SystemEnvironments::UNIT_TEST;
+
+echo 'bootstrap loaded' . PHP_EOL;

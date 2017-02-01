@@ -2,24 +2,28 @@
 
 namespace Kit\Core;
 
-use \Exception;
+use Exception;
 
-class JsonResponse{
+class JsonResponse
+{
 	const OK = 'OK';
 	const ERROR = 'ERROR';
 
-	public static function ok(array $data = NULL){
+	public static function ok(array $data = NULL)
+    {
 		return self::make(self::OK, $data);
 	}
 
-	public static function error(Exception $error, array $data = NULL){
+	public static function error(Exception $error, array $data = NULL)
+    {
 		$data['error']['code'] = $error->getCode();
 		$data['error']['message'] = $error->getMessage();
 
 		return self::make(self::ERROR, $data);
 	}
 
-	private static function make($status, $data = NULL){
+	private static function make($status, $data = NULL)
+    {
 		Response::setContentType('json');
 
 		$response = [

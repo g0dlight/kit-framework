@@ -2,5 +2,5 @@
 
 namespace Kit\Exception;
 
-class HttpNotFoundException extends CoreException{
-}
+class HttpNotFoundException extends CoreException
+{}

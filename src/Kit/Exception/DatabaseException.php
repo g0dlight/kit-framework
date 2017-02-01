@@ -2,5 +2,5 @@
 
 namespace Kit\Exception;
 
-class DatabaseException extends CoreException{
-}
+class DatabaseException extends CoreException
+{}

@@ -2,23 +2,29 @@
 
 namespace Kit\Core;
 
-use \Kit\Exception\HttpNotFoundException;
-use \Kit\Config;
-use \Exception;
+use Kit\Enums\SystemEnvironments;
+use Kit\Exception\HttpNotFoundException;
+use Kit\Config;
+use Exception;
 
-final class System{
+final class System
+{
+    public static $environment = NULL;
 	public static $jsonResponse = false;
 	public static $argv = NULL;
 
-	function __construct(){
-		Output::run();
+	function __construct()
+    {
+        Output::run();
 
-		Shutdown::run();
+        if(self::$environment !== SystemEnvironments::UNIT_TEST)
+            Shutdown::run();
 
 		Errors::run();
 	}
 
-	public function run($route=null, $accessPath=[]){
+	public function run($route=null, $accessPath=[])
+    {
 		try{
 			$this->setSettings();
 
@@ -57,13 +63,20 @@ final class System{
 		}
 	}
 
-	public static function setArgv($argv){
+	public static function isTerminalInterface()
+    {
+        return substr(PHP_SAPI, 0, 3) == 'cli';
+    }
+
+	public static function setArgv($argv)
+    {
 		array_shift($argv);
 
 		self::$argv = $argv;
 	}
 
-	private function setSettings(){
+	private function setSettings()
+    {
 		$config = Config::get('system');
 
 		date_default_timezone_set($config['defaultTimezone']);

@@ -2,12 +2,14 @@
 
 namespace Kit\Core;
 
-class Response{
+class Response
+{
 	private static $code = 200;
 	private static $contentType;
 
-	public static function setHeaders(){
-		if(!self::$contentType)
+	public static function setHeaders()
+    {
+		if( ! self::$contentType )
 			self::setContentType('html');
 
 		http_response_code(self::$code);
@@ -16,13 +18,15 @@ class Response{
 		return headers_list();
 	}
 
-	public static function setCode($code){
+	public static function setCode($code)
+    {
 		self::$code = $code;
 
 		return self::$code;
 	}
 
-	public static function setContentType($contentType){
+	public static function setContentType($contentType)
+    {
 		switch($contentType){
 			case 'html':
 			case 'xml':

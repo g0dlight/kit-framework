@@ -2,17 +2,20 @@
 
 namespace Kit\Core;
 
-class TemplateEngine{
+class TemplateEngine
+{
 	private $buildStatus = false;
 	private $content;
 	private $removedFiles = [];
 	private $substance = [];
 
-	public function __construct($file){
+	public function __construct($file)
+    {
 		$this->content = $this->getFileContent($file);
 	}
 
-	public function build(){
+	public function build()
+    {
 		$this->buildStatus = true;
 
 		$reg = '/<span template-engine=".*"><\/span>/';
@@ -26,25 +29,30 @@ class TemplateEngine{
 		return $this->content;
 	}
 
-	public function addSubstance($id, $value){
+	public function addSubstance($id, $value)
+    {
 		$this->substance[$id] = $value;
 	}
 
-	public function remove($file){
+	public function remove($file)
+    {
 		$this->removedFiles[$file] = true;
 	}
 
-	private function checkRemovedFiles($file){
+	private function checkRemovedFiles($file)
+    {
 		return $this->removedFiles[$file] ?? false;
 	}
 
-	private function replace($matches){
+	private function replace($matches)
+    {
 		$matches = str_replace(['<span template-engine="', '"></span>'], '', $matches);
 
 		return $this->substance[$matches[0]] ?? '';
 	}
 
-	private function replaceFromFile($matches){
+	private function replaceFromFile($matches)
+    {
 		$matches = str_replace(['<span template-engine-file="', '"></span>'], '', $matches);
 
 		$content = '';
@@ -56,7 +64,8 @@ class TemplateEngine{
 		return $content;
 	}
 
-	private function getFileContent($file){
+	private function getFileContent($file)
+    {
 		ob_start();
 
 		include BASE_PATH . 'App/Views/' . $file;
@@ -68,7 +77,8 @@ class TemplateEngine{
 		return $content;
 	}
 
-	public function __destruct(){
+	public function __destruct()
+    {
 		if(!$this->buildStatus){
 			echo $this->build();
 		}

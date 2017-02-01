@@ -2,12 +2,14 @@
 
 namespace Kit;
 
-use \Kit\Exception\CoreException;
+use Kit\Exception\CoreException;
 
-class Config{
+class Config
+{
 	private static $files = [];
 
-	private static function getFile(&$key){
+	private static function getFile(&$key)
+    {
 		$key = explode('.', $key);
 
 		$fileName = array_shift($key);
@@ -24,13 +26,15 @@ class Config{
 		return $fileName;
 	}
 
-	public static function get($key){
+	public static function get($key)
+    {
 		$fileName = self::getFile($key);
 
 		return Useful::nestedValue(self::$files[$fileName], $key);
 	}
 
-	public static function set($key, $value){
+	public static function set($key, $value)
+    {
 		$fileName = self::getFile($key);
 
 		return Useful::nestedValue(self::$files[$fileName], $key, $value);

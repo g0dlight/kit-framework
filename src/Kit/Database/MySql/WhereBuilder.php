@@ -6,7 +6,7 @@ class WhereBuilder{
 	public $queryBuilder;
 	public $query;
 
-	public function __construct($queryBuilder, $callback){
+	public function __construct(QueryBuilder $queryBuilder, $callback){
 		$this->queryBuilder = $queryBuilder;
 
 		$this->query = ' WHERE ' . $callback($this);

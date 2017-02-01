@@ -2,17 +2,18 @@
 
 namespace Kit\Core;
 
-use \Kit\Exception\CoreException;
-use \Kit\Exception\HttpNotFoundException;
-use \ReflectionMethod;
+use Kit\Exception\HttpNotFoundException;
+use ReflectionMethod;
 
-final class Router{
+final class Router
+{
 	public static $route = false;
 	public static $accessPath = false;
 	public static $requestMethod;
 	public static $httpMethod = ['get','post','delete','head','put','trace','options','connect','patch'];
 
-	public static function getRoute(){
+	public static function getRoute()
+    {
 		if(!self::$accessPath)
 			self::getAccessPath();
 
@@ -82,7 +83,8 @@ final class Router{
 		return self::prepareRoute($route, $accessPath);
 	}
 
-	public static function prepareRoute($route, $params){
+	public static function prepareRoute($route, $params)
+    {
 		$route = explode('@', $route);
 
 		if(count($route) != 2)
@@ -95,7 +97,8 @@ final class Router{
 		];
 	}
 
-	public static function runRoute($sortRoute){
+	public static function runRoute($sortRoute)
+    {
 		self::$route = $sortRoute;
 
 		if(!class_exists($sortRoute['class']))
@@ -121,7 +124,8 @@ final class Router{
 		return call_user_func_array([$run, $sortRoute['method']], $sortRoute['params']);
 	}
 
-	public static function getAccessPath(){
+	public static function getAccessPath()
+    {
 		$accessPath = (isset($_SERVER['PATH_INFO']))? $_SERVER['PATH_INFO']:'';
 		$accessPath = explode('/',$accessPath);
 
@@ -134,7 +138,8 @@ final class Router{
 		return self::$accessPath = $tmpAccessPath;
 	}
 
-	public static function cleanPath(&$string){
+	public static function cleanPath(&$string)
+    {
 		$parts = explode('-', strtolower($string));
 		$string = '';
 		foreach($parts as $value){

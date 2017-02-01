@@ -2,14 +2,15 @@
 
 namespace Kit\Core;
 
-use \Kit\Exception\CoreException;
-
-final class Shutdown{
-	public static function run(){
+final class Shutdown
+{
+	public static function run()
+    {
 		register_shutdown_function(array('Kit\Core\Shutdown', 'execute'), getcwd());
 	}
 
-	public static function execute($workingDir){
+	public static function execute($workingDir)
+    {
 		chdir($workingDir);
 		$errorCatch = error_get_last();
 		$notFatalError = [E_WARNING];

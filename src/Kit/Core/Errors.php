@@ -2,14 +2,15 @@
 
 namespace Kit\Core;
 
-use \Kit\Exception\CoreException,
-	\Kit\Config;
+use Kit\Config;
 
-final class Errors{
-	public static $config = array();
-	public static $catch = array();
+final class Errors
+{
+	public static $config = [];
+	public static $catch = [];
 
-	public static function run(){
+	public static function run()
+    {
 		self::$config = [
 			'500_handler' => '',
 			'404_handler' => ''
@@ -30,7 +31,8 @@ final class Errors{
 		set_error_handler(array('Kit\Core\Errors', 'nonfatal'));
 	}
 
-	public static function getTitle($errorNumber=0){
+	public static function getTitle($errorNumber=0)
+    {
 		$errorType = [
 			E_ERROR              => 'Error',
 			E_WARNING            => 'Warning',
@@ -57,7 +59,8 @@ final class Errors{
 		}
 	}
 
-	public static function fatal($error){
+	public static function fatal($error)
+    {
 		if(is_object($error)){
 			$trace = $error->getTrace();
 
@@ -92,65 +95,76 @@ final class Errors{
 		self::$catch[] = $error;
 	}
 
-	public static function nonfatal($errorNumber, $errorMessage, $errorFileName, $errorLineNumber){
+	public static function nonfatal($errorNumber, $errorMessage, $errorFileName, $errorLineNumber)
+    {
 		$error = [
 			'fatal' => false,
 			'title' => self::getTitle($errorNumber),
 			'type' => $errorNumber,
 			'message' => $errorMessage,
 			'file' => str_replace(dirname(getcwd()), '', $errorFileName),
-			'line' => $errorLineNumber,
-			'trace' => debug_backtrace()
+			'line' => $errorLineNumber
 		];
+
+        if( ! System::isTerminalInterface() )
+            $error['trace'] = debug_backtrace();
 
 		self::$catch[] = $error;
 	}
 
-	public static function flashErrors(){
+	public static function flashErrors()
+    {
 		Response::setCode(500);
 
 		$output = Output::get();
 		Output::clean();
 
-		$handler = self::$config['500_handler'];
-		if($handler){
-			$handler = Router::prepareRoute($handler, [self::$catch, $output]);
-			Router::runRoute($handler);
-			return;
-		}
+        if( self::runCustomHandler('500', [self::$catch, $output]) )
+            return;
 
 		$errors = self::$catch;
 
 		Response::setContentType('html');
 
-		if(!is_null(System::$argv)){
-			print_r(self::$catch);
+		if( System::isTerminalInterface() ){
+			print_r( $errors );
 		}
 		else{
 			include dirname(__DIR__).'/Views/Errors.php';
 		}
 	}
 
-	public static function httpNotFound($error){
+	public static function httpNotFound($error)
+    {
 		Response::setCode(404);
 
 		$output = Output::get();
 		Output::clean();
 
-		$handler = self::$config['404_handler'];
-		if($handler){
-			$handler = Router::prepareRoute($handler, [$error, $output]);
-			Router::runRoute($handler);
-			return;
-		}
+		if( self::runCustomHandler('404', [$error, $output]) )
+		    return;
 
 		Response::setContentType('html');
 
-		if(!is_null(System::$argv)){
-			print_r($error);
+        if( System::isTerminalInterface() ){
+			echo $error;
 		}
 		else{
 			include dirname(__DIR__).'/Views/404.php';
 		}
 	}
+
+	public static function runCustomHandler($type, $arguments)
+    {
+        $handler = self::$config[$type . '_handler'];
+
+        if( ! $handler )
+            return FALSE;
+
+        $handler = Router::prepareRoute($handler, $arguments);
+
+        Router::runRoute($handler);
+
+        return TRUE;
+    }
 }

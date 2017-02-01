@@ -2,14 +2,16 @@
 
 namespace Kit\Core;
 
-use \Kit\Exception\CoreException;
+use Kit\Exception\CoreException;
 
-class DataCourier{
+class DataCourier
+{
 	public $url;
 	public $options;
 	public $query;
 
-	public function __construct($url, $data = NULL, $options = NULL){
+	public function __construct($url, $data = NULL, $options = NULL)
+    {
 		$this->url = $url;
 
 		$this->setData($data);
@@ -17,7 +19,8 @@ class DataCourier{
 		$this->optionsInit($options);
 	}
 
-	private function setData($data){
+	private function setData($data)
+    {
 		if(is_array($data)){
 			$this->query = '?' . http_build_query($data);
 		}
@@ -26,7 +29,8 @@ class DataCourier{
 		}
 	}
 
-	private function optionsInit($options){
+	private function optionsInit($options)
+    {
 		$defualtOptions = [
 			// CURLOPT_HTTPHEADER => [],
 			CURLOPT_RETURNTRANSFER => TRUE, // return web page
@@ -51,30 +55,35 @@ class DataCourier{
 		$this->setOption(CURLOPT_URL, $this->url);
 	}
 
-	public function setOption($key, $value){
+	public function setOption($key, $value)
+    {
 		$this->options[$key] = $value;
 	}
 
-	public function setBasicAuth($username, $password){
+	public function setBasicAuth($username, $password)
+    {
 		$this->setOption(CURLOPT_HTTPAUTH, CURLAUTH_ANY);
 		$this->setOption(CURLOPT_USERPWD, $username . ':' . $password);
 	}
 
-	public function post(){
+	public function post()
+    {
 		$this->setOption(CURLOPT_POST, TRUE);
 		$this->setOption(CURLOPT_POSTFIELDS, $this->query);
 
 		return self::curl();
 	}
 
-	public function get(){
+	public function get()
+    {
 		if($this->query)
 			$this->setOption(CURLOPT_URL, $this->url . $this->query);
 
 		return self::curl();
 	}
 
-	private function curl(){
+	private function curl()
+    {
 		$ch = curl_init();
 
 		curl_setopt_array($ch, $this->options);

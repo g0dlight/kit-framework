@@ -2,17 +2,19 @@
 
 namespace Kit\Core;
 
-use \Kit\Exception\CoreException;
-use \Kit\Config;
-use \Memcached;
+use Kit\Exception\CoreException;
+use Kit\Config;
+use Memcached;
 
-class Cache{
+class Cache
+{
 	private static $memcached;
 
 	private static $servers;
 	private static $options;
 
-	public static function init($servers = FALSE, $options = []){
+	public static function init($servers = FALSE, $options = [])
+    {
 		if(self::$memcached)
 			return;
 
@@ -27,7 +29,8 @@ class Cache{
 		}
 	}
 
-	private static function setConfig($servers, $options){
+	private static function setConfig($servers, $options)
+    {
 		$config = Config::get('cache');
 
 		if(!$servers){
@@ -48,7 +51,8 @@ class Cache{
 		self::$options = $options;
 	}
 
-	public static function __callStatic($name, $arguments){
+	public static function __callStatic($name, $arguments)
+    {
 		self::init();
 
 		return call_user_func_array([self::$memcached, $name], $arguments);

@@ -2,7 +2,8 @@
 
 namespace Kit\Database\MySql;
 
-class QueryBuilder{
+class QueryBuilder
+{
 	private $sql;
 
 	private $scheme;
@@ -22,7 +23,8 @@ class QueryBuilder{
 
 	public static $timestampFormat = 'Y-m-d H:i:s';
 
-	private function __construct(Manager $model, $type){
+	private function __construct(Manager $model, $type)
+    {
 		$this->scheme = $model->_scheme;
 		$this->table = $model->_table;
 		$this->timestamps = $model->_timestamps;
@@ -31,7 +33,8 @@ class QueryBuilder{
 		return $this;
 	}
 
-	public static function insert($model, $rows){
+	public static function insert($model, $rows)
+    {
 		$self = new self($model, 'insert');
 
 		$query = '';
@@ -62,7 +65,8 @@ class QueryBuilder{
 		return $self;
 	}
 
-	public static function select($model, $columns = NULL){
+	public static function select($model, $columns = NULL)
+    {
 		$self = new self($model, 'select');
 
 		if(!$columns){
@@ -100,7 +104,8 @@ class QueryBuilder{
 		return $self;
 	}
 
-	public static function update($model, $rows){
+	public static function update($model, $rows)
+    {
 		$self = new self($model, 'update');
 
 		if($self->timestamps){
@@ -119,7 +124,8 @@ class QueryBuilder{
 		return $self;
 	}
 
-	public static function delete($model){
+	public static function delete($model)
+    {
 		$self = new self($model, 'delete');
 
 		$self->query = 'DELETE FROM `' . $self->scheme . '`.`' . $self->table . '`';
@@ -127,7 +133,8 @@ class QueryBuilder{
 		return $self;
 	}
 
-	public function where($callback){
+	public function where($callback)
+    {
 		$where = new WhereBuilder($this, $callback);
 
 		$this->where = $where->query;
@@ -135,7 +142,8 @@ class QueryBuilder{
 		return $this;
 	}
 
- 	public function group($group){
+ 	public function group($group)
+    {
 		$this->group = ' GROUP BY ';
 
 		foreach($group as $column){
@@ -147,7 +155,8 @@ class QueryBuilder{
 		return $this;
 	}
 
-	public function order($order){
+	public function order($order)
+    {
 		$this->order = ' ORDER BY ';
 		foreach($order as $set){
 			foreach($set as $column => $sort){
@@ -161,41 +170,49 @@ class QueryBuilder{
 		return $this;
 	}
 
-	public function limit($limit){
+	public function limit($limit)
+    {
 		$this->limit = ' LIMIT '.$limit;
 
 		return $this;
 	}
 
-	public function offset($offset){
+	public function offset($offset)
+    {
 		$this->offset = ' OFFSET '.$offset;
 
 		return $this;
 	}
 
-	private function build(){
+	private function build()
+    {
 		$this->sql = $this->query.$this->where.$this->group.$this->order.$this->limit.$this->offset;
 	}
 
-	public function getSyntax(){
+	public function getSyntax()
+    {
 		$this->build();
 
 		return $this->sql;
 	}
 
-	public function getValues(){
+	public function getValues()
+    {
 		return $this->values;
 	}
 
-	public function getTable(){
+	public function getTable()
+    {
 		return $this->table;
 	}
 
-	public function addValue($value){
+	public function addValue($value)
+    {
 		$this->values[] = $value;
 	}
 
-	public function isInsert(){
+	public function isInsert()
+    {
 		if($this->type == 'insert'){
 			return TRUE;
 		}
@@ -203,7 +220,8 @@ class QueryBuilder{
 		return FALSE;
 	}
 
-	public function isWithTimestamps(){
+	public function isWithTimestamps()
+    {
 		return $this->timestamps;
 	}
 }

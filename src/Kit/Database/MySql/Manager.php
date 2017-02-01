@@ -2,10 +2,10 @@
 
 namespace Kit\Database\MySql;
 
-use \Kit\Exception\DatabaseException,
-	\ReflectionClass;
+use Kit\Exception\DatabaseException;
 
-abstract class Manager{
+abstract class Manager
+{
 	protected $_queryBuilder;
 	protected $_statement;
 	protected $_rowData;
@@ -13,7 +13,8 @@ abstract class Manager{
 
 	public $_timestamps = TRUE;
 
-	public function __call($name, $arguments){
+	public function __call($name, $arguments)
+    {
 		if(!$this->_queryBuilder){
 			throw new DatabaseException('Can not use `' . $name . '` method before useing primary method');
 		}
@@ -23,11 +24,13 @@ abstract class Manager{
 		return $this;
 	}
 
-	public static function __callStatic($name, $arguments){
+	public static function __callStatic($name, $arguments)
+    {
 		return self::initQueryBuilder($name, $arguments);
 	}
 
-	public function __get($key){
+	public function __get($key)
+    {
 		if(!array_key_exists($key, $this->_rowData)){
 			throw new DatabaseException('trying to get property not exists');
 		}
@@ -35,23 +38,28 @@ abstract class Manager{
 		return $this->_rowData[$key];
 	}
 
-	public function __set($key, $value){
+	public function __set($key, $value)
+    {
 		$this->_rowData[$key] = $value;
 	}
 
-	public function __isset($key){
+	public function __isset($key)
+    {
 		return isset($this->_rowData[$key]);
 	}
 
-	public function __unset($key){
+	public function __unset($key)
+    {
 		unset($this->_rowData[$key]);
 	}
 
-	public function getQuerySyntax(){
+	public function getQuerySyntax()
+    {
 		return $this->_queryBuilder->getSyntax();
 	}
 
-	public function execute(){
+	public function execute()
+    {
 		$connection = Connection::get($this->_server);
 
 		$this->_statement = $connection->prepare($this->getQuerySyntax());
@@ -72,7 +80,8 @@ abstract class Manager{
 		}
 	}
 
-	public function fetch(){
+	public function fetch()
+    {
 		if(!$this->_statement){
 			$this->execute();
 		}
@@ -87,7 +96,8 @@ abstract class Manager{
 		return $this;
 	}
 
-	public function save(){
+	public function save()
+    {
 		$temp = $this->toArray();
 
 		if($this->_saveType == 'update'){
@@ -121,18 +131,21 @@ abstract class Manager{
 		return $result;
 	}
 
-	public function remove(){
+	public function remove()
+    {
 		$self = $this;
 		return static::initQueryBuilder('delete')->where(function($w) use ($self){
 			return $w->assert('id', '=', $self->id);
 		})->execute();
 	}
 
-	public function toArray(){
+	public function toArray()
+    {
 		return $this->_rowData;
 	}
 
-	private static function initQueryBuilder($name, $arguments = []){
+	private static function initQueryBuilder($name, $arguments = [])
+    {
 		$obj = new static();
 
 		$arguments = array_merge([$obj], $arguments);
