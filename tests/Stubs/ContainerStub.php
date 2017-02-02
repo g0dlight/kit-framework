@@ -47,7 +47,6 @@ class Apple implements FoodInterface
     public function __construct(){}
 }
 
-
 class God
 {
     private function __construct(){}

@@ -129,7 +129,7 @@ class Container
      * @param $resolveTarget
      * @return string
      */
-    public function checkBindings(&$class, &$resolveTarget)
+    protected function checkBindings(&$class, &$resolveTarget)
     {
         if( isset( self::$bindings[$class] ) ){
             if( is_callable( self::$bindings[$class] ) ){
@@ -145,7 +145,6 @@ class Container
 
         return 'resolveClass';
     }
-
 
     /**
      * @param Closure $closure
