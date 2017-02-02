@@ -4,6 +4,7 @@ namespace Kit\Core;
 
 use ReflectionClass;
 use ReflectionMethod;
+use Closure;
 use Kit\Exception\CoreException;
 
 /**
@@ -84,18 +85,18 @@ class Container
     {}
 
     /**
-     * @param $class
+     * @param string $class
      * @param array $additionalParameters
      * @return mixed|object
      */
-    public function resolve($class, array $additionalParameters = [])
+    public function resolve(string $class, array $additionalParameters = [])
     {
-        $class = self::$bindings[$class] ?? $class;
+        $resolveType = $this->checkBindings($class, $resolveTarget);
 
         if( isset( $this->instances[$class] ) )
             return $this->instances[$class];
 
-        $instance = $this->resolveClass($class, $additionalParameters);
+        $instance = $this->$resolveType($resolveTarget, $additionalParameters);
 
         if( isset( self::$singletons[$class] ) )
             $this->instances[$class] = $instance;
@@ -125,17 +126,47 @@ class Container
 
     /**
      * @param $class
+     * @param $resolveTarget
+     * @return string
+     */
+    public function checkBindings(&$class, &$resolveTarget)
+    {
+        if( isset( self::$bindings[$class] ) ){
+            if( is_callable( self::$bindings[$class] ) ){
+                $resolveTarget = self::$bindings[$class];
+
+                return 'resolveClosure';
+            }
+
+            $class = self::$bindings[$class];
+        }
+
+        $resolveTarget = $class;
+
+        return 'resolveClass';
+    }
+
+
+    /**
+     * @param Closure $closure
+     * @param array $additionalParameters
+     * @return mixed
+     */
+    protected function resolveClosure(Closure $closure, array $additionalParameters)
+    {
+        return $closure($this, $additionalParameters);
+    }
+
+    /**
+     * @param $class
      * @param array $additionalParameters
      * @return object
      */
     protected function resolveClass($class, array $additionalParameters)
     {
-        if( isset( $this->resolveStack[$class] ) )
-            $this->resolveFailure($class);
-
         $reflector = new ReflectionClass($class);
 
-        if( ! $reflector->isInstantiable() )
+        if( isset( $this->resolveStack[$class] ) || ! $reflector->isInstantiable() )
             $this->resolveFailure($class);
 
         $this->resolveStack[$class] = $class;

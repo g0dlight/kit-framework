@@ -5,6 +5,7 @@ use Kit\Core\Container;
 include BASE_PATH . '../Stubs/ContainerStub.php';
 
 use ContainerTest\FoodInterface;
+use ContainerTest\movableInterface;
 use ContainerTest\Wild;
 use ContainerTest\Animal;
 use ContainerTest\God;
@@ -60,6 +61,25 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         $container = Container::instance();
 
         $animal = $container->resolve(Animal::class);
+
+        $this->assertEquals(get_class($animal), Animal::class);
+    }
+
+    public function testResolveGodClosure()
+    {
+        $test = $this;
+
+        Container::bind(movableInterface::class, function($container, $parameters) use ($test) {
+            $test->assertEquals(get_class($container), Container::class);
+
+            $test->assertTrue( is_array($parameters) );
+
+            return new Animal();
+        });
+
+        $container = Container::instance();
+
+        $animal = $container->resolve(movableInterface::class);
 
         $this->assertEquals(get_class($animal), Animal::class);
     }

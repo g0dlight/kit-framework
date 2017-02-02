@@ -5,12 +5,15 @@ namespace ContainerTest;
 interface FoodInterface
 {}
 
+interface movableInterface
+{}
+
 class Wild
 {
     public function __construct(Animal $a , Tree $b){}
 }
 
-class Animal
+class Animal implements movableInterface
 {
     public function getFood(FoodInterface $a){
         return get_class($a);
